@@ -4,11 +4,14 @@ import java.lang.StringBuilder;
 public class Account {
 	private String accountNumber;
 	private String name;
+	private String password;
+	
 	private double balance = 0.0;
 	private int cvc;
-	private int id;
-	private static int idCounter = 0;
-	private String password;
+	private long id;
+	
+	private static long idCounter = 0;
+	
 	
 	public Account(String name, String password) {
 		this.name = name;

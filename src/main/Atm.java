@@ -3,6 +3,11 @@ import java.util.Scanner;
 import java.util.Map;
 import java.util.HashMap;
 
+import prompts.Prompt;
+import prompts.CardNumberPrompt;
+import prompts.PinPrompt;
+import prompts.NamePrompt;
+
 public class Atm {
 	private Scanner scanner;
 	
@@ -17,6 +22,12 @@ public class Atm {
 		switch (nextMenu) {
 		case 1: {
 			createAccount();
+			login();
+			break;
+		}
+		case 2: {
+			login();
+			break;
 		}
 		}
 	}
@@ -29,7 +40,7 @@ public class Atm {
 		int decision = -1;
 		
 		while (true) {
-			System.out.println("Create account - enter 1: ");
+			System.out.println("Create account - enter 1\nLogin - enter 2");
 			decision = Integer.parseInt(scanner.nextLine());
 			if (decision == 1) break;
 			
@@ -41,33 +52,30 @@ public class Atm {
 	
 	public void createAccount() {
 		Prompt[] prompts = {
-				new Prompt("Enter your name", "Name must be at least 1 char"),
-				new Prompt("Enter 4 digit pin", "Pin must have 4 digits")
+				new NamePrompt(),
+				new PinPrompt()
 		};
-		String name;
-		String pin;
 		
-		while(true) {
-			System.out.println(prompts[0].getMessage());
-			name = scanner.nextLine();
-			if (name.length() >= 4) {
-				break;
-			}
-			System.out.println(prompts[0].getError());
-		}
-		
-		while(true) {
-			System.out.println(prompts[1].getMessage());
-			pin = scanner.nextLine();
-			
-			if (pin.length() == 4 && Integer.parseInt(pin) > 0) {
-				break;
-			}
-			System.out.println(prompts[1].getError());
-		}
+		String[] userData = Utils.showMenu(prompts, scanner);
+		String name = userData[0];
+		String pin = userData[1];
 		
 		Account acc = new Account(name, pin);
 		Utils.appendToFile(Constants.SAVE_FILE_PATH, acc.toString().replace("\n", ""));
+		System.out.println("Account created, redirecting to login...");
+	}
+	
+	public boolean login() {
+		System.out.println("Log in");
+		System.out.println("Enter the following data to login...");
+		Prompt[] prompts = {
+				new CardNumberPrompt(),
+				new PinPrompt(),
+				
+		};
+		String[] result = Utils.showMenu(prompts, scanner);
+		
+		return true;
 	}
 	
 }
